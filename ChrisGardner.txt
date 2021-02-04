@@ -1,0 +1,182 @@
+import java.io.*;  
+import java.util.*; 
+public class Solution {  
+    public static void main(String[] args) throws Exception {  
+        System.out.println("Введите 2 числа и нужную арифметическую операцию (a + b, a - b, a * b, a / b)."); 
+        System.out.println("Входные значения должны быть диапазоне от 1 до 10 включительно"); 
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  
+        String string = reader.readLine();   
+        String[] arr = string.split(" "); // заносим строку в массив в качестве разделения символов на элементы используем пробел  
+          
+        try{ // Служит для того чтобы отличать были переданы цифры или символы 
+            int a = Integer.parseInt (arr[0]);   
+            char b = arr[1].charAt(0);  
+            int c = Integer.parseInt (arr[2]);  
+              
+            if((a <= 10) & (a > 0) & (c <= 10) & (c > 0)){  
+                CalculatingArab calculatingarab = new CalculatingArab(a,b,c);  
+                System.out.println(calculatingarab.calc());  
+            }else{  
+                System.out.println("Входные значения не попадают диапазон от 1 до 10");  
+            }  
+              
+        }catch (NumberFormatException e) { // если переданы символы 
+            char b = arr[1].charAt(0);  
+              
+            Translator translator = new Translator(arr[0],arr[2]); // передаем параметры в в класс чтобы   
+            // воспользоваться методом преобразующим римские в арабские  
+            RomanDigit first2 = new RomanDigit(translator.rometoArabic(),b,translator.rometoArabic2());   
+            String result = first2.calcRome(); // римское число результат сложения римских  
+            System.out.println(result);  
+        }  
+    }  
+}  
+abstract class Resources{ 
+    protected int a;  
+    protected char b;  
+    protected int c;  
+} 
+class CalculatingArab extends Resources{  
+   public CalculatingArab(int a, char b, int c){  
+        this.a = a;  
+        this.b = b;  
+        this.c = c;  
+    }  
+   public int calc(){  
+        int result = 0;  
+        switch (b){  
+            case '+':  
+                result = a+c;  
+                break;  
+            case '-':  
+                result = a-c;  
+                break;  
+            case '*':  
+                result = a*c;  
+                break;  
+            case '/':  
+                result = a/c;  
+                break;  
+            default:  
+                System.out.println("Операция не распознана. Повторите ввод.");  
+                 
+        }  
+        return result;  
+   }  
+}  
+class Translator{  
+    private String a;  
+    private String c;  
+     
+    public Translator(String a,String c){  
+        this.a = a;  
+        this.c = c;  
+    }  
+    public Integer rometoArabic(){  
+        String [] romans = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X" };  
+          
+        int arabic = 0;  
+        for (int i = 0; i < 10; i++){  
+            if(romans[i].equals(a)){  
+                arabic=(i+1);  
+            }  
+        }  
+        return arabic;  
+    }  
+    public Integer rometoArabic2(){  
+        String [] romans = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X" };  
+          
+        int arabic = 0;  
+        for (int i = 0; i < 10; i++){  
+            if(romans[i].equals(c)){  
+                arabic=(i+1);  
+            }  
+        }  
+        return arabic;  
+    }  
+}  
+class RomanDigit extends Resources{  
+    public RomanDigit(int a, char b, int c){  
+        this.a = a;  
+        this.b = b;  
+        this.c = c;  
+    }  
+      
+    public String calcRome(){  
+        int calcresult = 0;  
+        switch (b){  
+            case '+':  
+                calcresult = a+c;  
+                break;  
+            case '-':  
+                calcresult = a-c;  
+                break;  
+            case '*':  
+                calcresult = a*c;  
+                break;  
+            case '/':  
+                calcresult = a/c;  
+                break;  
+            default:  
+                System.out.println("Операция не распознана. Повторите ввод.");  
+                 
+        }  
+        String s = (convert(calcresult));  
+        return s;  
+    }  
+      
+    private  String convert(int calcresult) {  
+        // получаем остаток от деления на 10 (number % 10)  
+        String romanOnes = romanDigit(calcresult % 10, "I", "V", "X");   
+        calcresult /= 10;  // делим number на 10 чтобы работать с десятками  
+        String romanTens = romanDigit(calcresult % 10, "X", "L", "C"); // повторяем для десятков  
+        calcresult /= 10;  
+        String romanHundreds = romanDigit(calcresult % 10, "C", "D", "M");  
+        calcresult /= 10;  
+        String result = romanHundreds + romanTens + romanOnes; // складываем единицы десятки сотни  
+        return result;  
+    }  
+      
+    private  String romanDigit(int n, String one, String five, String ten){  
+        if(n >= 1)  
+        {  
+            if(n == 1)  
+            {  
+                return one;  
+            }  
+            else if (n == 2)  
+            {  
+                return one + one;  
+            }  
+            else if (n == 3)  
+            {  
+                return one + one + one;  
+            }  
+            else if (n==4)  
+            {  
+                return one + five;  
+            }  
+            else if (n == 5)  
+            {  
+                return five;  
+            }  
+            else if (n == 6)  
+            {  
+                return five + one;  
+            }  
+            else if (n == 7)  
+            {  
+                return five + one + one;  
+            }  
+            else if (n == 8)  
+            {  
+                return five + one + one + one;  
+            }  
+            else if (n == 9)  
+            {  
+                return one + ten;  
+            }  
+        }  
+        return "";  
+    }  
+}
